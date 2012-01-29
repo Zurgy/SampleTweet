@@ -23,6 +23,9 @@
 {
     [super viewDidLoad];
     
+    // Noddy cache to store profile pics
+    twitterProfilePics = [[NSMutableDictionary alloc] init];
+    
     // Load some tweets.
     twitterManager = [[TwitterManager alloc] initWithDelegate:self];
     [twitterManager getTweetsForUser:@"O2" count:20];
@@ -30,9 +33,11 @@
 
 - (void)viewDidUnload
 {
+    // In this example the view is not going to be unloaded but good practise
+    // dictated you'd want to clear any references to the view when it gets
+    // unloaded.
+    twitterManager.delegate = nil;
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 #pragma mark - UISearchBarDelegate
@@ -43,12 +48,6 @@
 }
 
 #pragma mark - UITableViewDataSource
-
-/*** Return a custom height for the table cells. We know TwitterTableCell is 113 pixels so
- hard-code this value. */
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  { 
-    return 113.0;            
-}
 
 /*** There's only one section in our table. */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -62,6 +61,9 @@
     return [tweets count];
 }
 
+/*** Return one of our custom TwitterTableCells and configure it to display the contents
+ of the tweet.
+ */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     TwitterTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kTwitterCellIdentifier];
@@ -74,15 +76,18 @@
     
     Tweet *tweet = [tweets objectAtIndex:[indexPath row]];
     [cell configureWithTweet:tweet];
+    cell.profilePic.image = [self getTwitterProfilePic:tweet];
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tweet Tapped" message:@"You tapped a tweet." delegate:nil cancelButtonTitle:@"I'm Done" otherButtonTitles:nil];
-    [alert show];
+/*** Return a custom height for the table cells. We know TwitterTableCell is 113 pixels so
+ hard-code this value. */
+/* For reasons I've never understood this method is part of UITableViewDelegate. */
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  { 
+    return 113.0;            
 }
 
 #pragma mark - TwitterManagerDelegate
@@ -94,13 +99,24 @@
 }
 
 - (void)twitterProfilePicAvailable:(NSString *)profilePicURL image:(UIImage *)profilePic {
-  //  [twitterProfilePics setObject:profilePic forKey:profilePicURL];
-    /*  for (Tweet *tweet in self.tweets) {
-     if ([tweet.profile_image_url compare:profilePicURL] == NSOrderedSame) {
-     // Refresh this cell
-     //            [venueDetailsTable reload
+    [twitterProfilePics setObject:profilePic forKey:profilePicURL];
+    for (Tweet *tweet in tweets) {
+        if ([tweet.profile_pic_url compare:profilePicURL] == NSOrderedSame) {
+            NSUInteger tweetIndex = [tweets indexOfObject:tweet];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:tweetIndex inSection:0];
+            NSArray *indexPathArray = [NSArray arrayWithObject:indexPath];
+            [tweetTable reloadRowsAtIndexPaths:indexPathArray withRowAnimation:UITableViewRowAnimationNone];
+        }
      }
-     }*/
+}
+
+
+- (UIImage *)getTwitterProfilePic:(Tweet *)tweet {
+    UIImage *profilePic = [twitterProfilePics objectForKey:tweet.profile_pic_url];
+    if (profilePic == nil) {
+        [twitterManager getProfilePicForTweet:tweet];
+    }
+    return profilePic;
 }
 
 @end

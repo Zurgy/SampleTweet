@@ -21,14 +21,7 @@
     profilePic.image = tweet.profile_pic;
     username.text = tweet.userId;
     fullname.text = tweet.username;
-
-    static NSDateFormatter *dateFormatter;
-    if (dateFormatter == nil) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    }
-    NSLog(@"LONG: %@", [tweet howLongAgo]);
-    twitterTimestamp.text = [tweet howLongAgo];// [dateFormatter stringFromDate:tweet.created];
+    twitterTimestamp.text = [tweet howLongAgo];
 }
 
 - (NSString *)reuseIdentifier {

@@ -25,12 +25,10 @@
     NSAssert(twitterId != nil, @"twitterId must not be nil");
     
     NSLog(@"Retrieving tweets for user: %@", twitterId);
-//    [self performSelector:@selector(returnDummyTweets) withObject:nil afterDelay:8];
 
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://api.twitter.com/1/statuses/user_timeline.json?id=%@", twitterId]];
-
    
-  //  NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://search.twitter.com/search.json?q=@%@&result_type=mixed&count=%d", twitterId, count]];
+//    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://search.twitter.com/search.json?q=@%@&result_type=mixed&count=%d", twitterId, count]];
 
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     [request setDelegate:self];
@@ -39,56 +37,38 @@
 }
 
 
+/*** This is sub-optimal. When the initial table cells are displayed, in the example the tweets
+ are all for the same user and therefore have the same profile pic. This causes several network
+ requests to be made for the same resource. When at least one has been downloaded it is cached
+ and when further tweets are displayed the no further network requests are made.
+ */
 - (void)getProfilePicForTweet:(Tweet *)tweet {
-
-//- (void)getTwitterProfilePic:(NSString *)profilePicURL {
     // These are handled on a separate queue so they can be cancelled if the user
     // moves to another view
     if (profilePicQueue == nil) {
         self.profilePicQueue = [[NSOperationQueue alloc] init];
     }
     
-    //NSLog(@"Downloading profile pic: %@", tweet.profile_pic_url);
+//    NSLog(@"Downloading profile pic: %@", tweet.profile_pic_url);
     __block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:tweet.profile_pic_url]];
     [request setDownloadCache:[ASIDownloadCache sharedCache]];
     [request setCompletionBlock:^{
+        if (![request didUseCachedResponse]) {
+            NSLog(@"Loaded pic from network.");
+        }
         UIImage *profilePic = [UIImage imageWithData:[request responseData]];
         tweet.profile_pic = profilePic;
+        [delegate twitterProfilePicAvailable:tweet.profile_pic_url image:profilePic];
     }];
     [request setQueue:profilePicQueue];
     [request startAsynchronous];
-    
-}
-
-- (void)returnDummyTweets {
-    NSMutableArray *tweets = [[NSMutableArray alloc] initWithCapacity:3];
-    Tweet *tweet1 = [[Tweet alloc] init];
-    Tweet *tweet2 = [[Tweet alloc] init];
-    Tweet *tweet3 = [[Tweet alloc] init];
-    tweet1.message = @"Hello world. The quick brown fox jumped over the lazy dog.";
-    tweet2.message = @"Hello world. The quick brown fox jumped over the lazy dog.";
-    tweet3.message = @"Hello world. The quick brown fox jumped over the lazy dog.";
-    [tweets addObject:tweet1];
-    [tweets addObject:tweet2];
-    [tweets addObject:tweet3];
-    [delegate tweetsAvailable:tweets];
 }
 
 #pragma mark - ASIHTTPRequestDelegate
 
-- (void)profilePicLoaded:(ASIHTTPRequest *)request {
-   // UIImage *profilePic = [UIImage imageWithData:[request responseData]];
-   // NSString *foo = [NSString stringWithContentsOfURL:[request url]];
-   // NSLog(@"Profile Pic: %@", foo);
-    //[delegate twitterProfilePicAvailable:foo image:profilePic];
-}
-
 - (void)requestFinished:(ASIHTTPRequest *)request {
-    //NSLog(@"Got response from Twitter");
     NSData *dataFromServer = [request responseData];
-
-   // SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
-    NSArray *results = [NSJSONSerialization JSONObjectWithData:dataFromServer options:nil error:nil];
+    NSArray *results = [NSJSONSerialization JSONObjectWithData:dataFromServer options:0 error:nil];
     
     NSMutableArray *tweets = [[NSMutableArray alloc] initWithCapacity:[results count]];
     for (NSDictionary *result in results) {
@@ -97,9 +77,10 @@
         Tweet *tweet = [[Tweet alloc] init];
         tweet.created = [dateFormatter dateFromString:[result objectForKey:@"created_at"]];
         tweet.message = [result objectForKey:@"text"];
-        tweet.profile_pic_url = [result objectForKey:@"profile_image_url"];
-        tweet.userId = [result objectForKey:@"from_user"];
-        tweet.username = [result objectForKey:@"from_user_name"];
+        NSDictionary *userDetails = [result objectForKey:@"user"];
+        tweet.profile_pic_url = [userDetails objectForKey:@"profile_image_url"];
+        tweet.userId = [userDetails objectForKey:@"screen_name"];
+        tweet.username = [userDetails objectForKey:@"name"];
         [self getProfilePicForTweet:tweet];
         
         [tweets addObject:tweet];
@@ -109,6 +90,7 @@
 }
 
 - (void)requestFailed:(ASIHTTPRequest *)request {
-
+    // Should add a method to TwitterManagerDelegate to allow errors to be reported
+    // back to the caller.
 }
 @end

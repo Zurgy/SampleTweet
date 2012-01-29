@@ -20,6 +20,8 @@
 		B5BF87A214D56ABF0002D43D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BF87A114D56ABE0002D43D /* SystemConfiguration.framework */; };
 		B5BF87A414D56ACA0002D43D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BF87A314D56ACA0002D43D /* MobileCoreServices.framework */; };
 		B5BF87A614D56ADA0002D43D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BF87A514D56ADA0002D43D /* libz.dylib */; };
+		B5BF87A914D5742F0002D43D /* bird_16_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = B5BF87A814D5742E0002D43D /* bird_16_blue.png */; };
+		B5BF87AB14D584290002D43D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B5BF87AA14D584290002D43D /* README.md */; };
 		B5FEB24814D03A2300736F12 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5FEB24714D03A2300736F12 /* UIKit.framework */; };
 		B5FEB24A14D03A2300736F12 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5FEB24914D03A2300736F12 /* Foundation.framework */; };
 		B5FEB24C14D03A2300736F12 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5FEB24B14D03A2300736F12 /* CoreGraphics.framework */; };
@@ -61,6 +63,8 @@
 		B5BF87A114D56ABE0002D43D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B5BF87A314D56ACA0002D43D /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		B5BF87A514D56ADA0002D43D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		B5BF87A814D5742E0002D43D /* bird_16_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bird_16_blue.png; sourceTree = "<group>"; };
+		B5BF87AA14D584290002D43D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		B5FEB24314D03A2300736F12 /* SampleTweet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleTweet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5FEB24714D03A2300736F12 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B5FEB24914D03A2300736F12 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -133,6 +137,7 @@
 		B5FEB23814D03A2200736F12 = {
 			isa = PBXGroup;
 			children = (
+				B5BF87AA14D584290002D43D /* README.md */,
 				B5FEB24D14D03A2300736F12 /* SampleTweet */,
 				B5FEB24614D03A2300736F12 /* Frameworks */,
 				B5FEB24414D03A2300736F12 /* Products */,
@@ -185,6 +190,7 @@
 		B5FEB24E14D03A2300736F12 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B5BF87A814D5742E0002D43D /* bird_16_blue.png */,
 				B5FEB24F14D03A2300736F12 /* SampleTweet-Info.plist */,
 				B5FEB25014D03A2300736F12 /* InfoPlist.strings */,
 				B5FEB25314D03A2300736F12 /* main.m */,
@@ -246,6 +252,8 @@
 				B5FEB25214D03A2300736F12 /* InfoPlist.strings in Resources */,
 				B5FEB25E14D03A2300736F12 /* ViewController.xib in Resources */,
 				B5FEB26E14D03A3900736F12 /* TwitterTableCell.xib in Resources */,
+				B5BF87A914D5742F0002D43D /* bird_16_blue.png in Resources */,
+				B5BF87AB14D584290002D43D /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

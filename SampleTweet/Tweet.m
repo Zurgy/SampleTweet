@@ -39,8 +39,6 @@
     } else {
         return [NSString stringWithFormat:@"%d hours %d minutes ago", [breakdownInfo hour], [breakdownInfo minute]];
     }
-    
-
 }
 
 @end

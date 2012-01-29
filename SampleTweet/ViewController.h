@@ -12,9 +12,12 @@
 
 @interface ViewController : UIViewController <TwitterManagerDelegate, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate> {
     NSArray *tweets;
+    NSMutableDictionary *twitterProfilePics;
     TwitterManager *twitterManager;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tweetTable;
+
+- (UIImage *)getTwitterProfilePic:(Tweet *)tweet;
 
 @end

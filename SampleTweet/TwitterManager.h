@@ -29,8 +29,6 @@
 
 - (void)getTweetsForUser:(NSString *)twitterId count:(NSInteger)count;
 - (void)getProfilePicForTweet:(Tweet *)tweet;
-//- (void)getTwitterProfilePic:(NSString *)profilePicURL;
 - (id)initWithDelegate:(id<TwitterManagerDelegate>)delegate;
-- (void)profilePicLoaded:(ASIHTTPRequest *)request;
-- (void)returnDummyTweets;
+
 @end
