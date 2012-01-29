@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "ASIDownloadCache.h"
 #import "ASIHTTPRequest.h"
-#import "SBJson.h"
 #import "Tweet.h"
 
 @protocol TwitterManagerDelegate

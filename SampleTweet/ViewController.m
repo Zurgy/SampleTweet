@@ -9,6 +9,7 @@
 #import "ViewController.h"
 
 @implementation ViewController
+@synthesize tweetTable;
 
 - (void)didReceiveMemoryWarning
 {
@@ -21,7 +22,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    // Load some tweets.
+    twitterManager = [[TwitterManager alloc] initWithDelegate:self];
+    [twitterManager getTweetsForUser:@"O2" count:20];
 }
 
 - (void)viewDidUnload
@@ -31,30 +35,72 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
+#pragma mark - UISearchBarDelegate
+
+/*** Load tweets for whatever Twitter ID was typed into the searchbar. */
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [twitterManager getTweetsForUser:searchBar.text count:20];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
+#pragma mark - UITableViewDataSource
+
+/*** Return a custom height for the table cells. We know TwitterTableCell is 113 pixels so
+ hard-code this value. */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath  { 
+    return 113.0;            
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+/*** There's only one section in our table. */
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	[super viewWillDisappear:animated];
+    return 1;
 }
 
-- (void)viewDidDisappear:(BOOL)animated
+/*** How many tweets are there to display? */
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	[super viewDidDisappear:animated];
+    return [tweets count];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return YES for supported orientations
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    TwitterTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kTwitterCellIdentifier];
+    
+    if (cell == nil)
+    {
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:@"TwitterTableCell" owner:self options:nil];
+        cell = [nib objectAtIndex:0];
+    }
+    
+    Tweet *tweet = [tweets objectAtIndex:[indexPath row]];
+    [cell configureWithTweet:tweet];
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tweet Tapped" message:@"You tapped a tweet." delegate:nil cancelButtonTitle:@"I'm Done" otherButtonTitles:nil];
+    [alert show];
+}
+
+#pragma mark - TwitterManagerDelegate
+
+/*** When new tweets are loaded refresh the entire table. */
+- (void)tweetsAvailable:(NSArray *)latestTweets {
+    tweets = latestTweets;
+    [tweetTable reloadData];
+}
+
+- (void)twitterProfilePicAvailable:(NSString *)profilePicURL image:(UIImage *)profilePic {
+  //  [twitterProfilePics setObject:profilePic forKey:profilePicURL];
+    /*  for (Tweet *tweet in self.tweets) {
+     if ([tweet.profile_image_url compare:profilePicURL] == NSOrderedSame) {
+     // Refresh this cell
+     //            [venueDetailsTable reload
+     }
+     }*/
 }
 
 @end

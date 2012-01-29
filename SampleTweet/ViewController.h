@@ -7,7 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TwitterManager.h"
+#import "TwitterTableCell.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <TwitterManagerDelegate, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate> {
+    NSArray *tweets;
+    TwitterManager *twitterManager;
+}
+
+@property (nonatomic, retain) IBOutlet UITableView *tweetTable;
 
 @end

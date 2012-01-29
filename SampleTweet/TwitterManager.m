@@ -87,8 +87,8 @@
     //NSLog(@"Got response from Twitter");
     NSData *dataFromServer = [request responseData];
 
-    SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
-    NSArray *results = [jsonParser objectWithData:dataFromServer];
+   // SBJsonParser *jsonParser = [[SBJsonParser alloc] init];
+    NSArray *results = [NSJSONSerialization JSONObjectWithData:dataFromServer options:nil error:nil];
     
     NSMutableArray *tweets = [[NSMutableArray alloc] initWithCapacity:[results count]];
     for (NSDictionary *result in results) {
