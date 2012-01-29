@@ -18,14 +18,16 @@
 
 - (NSString *)howLongAgo {
     NSDate *now = [NSDate date];
-  //  NSTimeInterval howLong = [now timeIntervalSinceDate:self.created];
-    unsigned int unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit;
-    
+
+    // Most Twitter users tweet regularly so it's rare that the most recent tweets will be more
+    // than a couple of weeks old. Therefore I don't bother breaking out the number of months
+    // or years. Instead the age of anything older than a day is reported in days.
+    unsigned int unitFlags = NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit;    
     NSCalendar *gregorian = [[NSCalendar alloc]
                              initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *breakdownInfo = [gregorian components:unitFlags fromDate:self.created toDate:now  options:0];
     
-   // NSLog(@"Break down: %dmin %dhours %ddays %dmoths",[breakdownInfo minute], [breakdownInfo hour], [breakdownInfo day], [breakdownInfo month]);
+   // NSLog(@"Breakdown: %dmin %dhours %ddays %dmoths",[breakdownInfo minute], [breakdownInfo hour], [breakdownInfo day], [breakdownInfo month]);
     
     if ([breakdownInfo day] > 1) {
         return [NSString stringWithFormat:@"%d days ago", [breakdownInfo day]];
